@@ -1,0 +1,35 @@
+# Project outputs (keep the empty data/ folder)
+data/*
+!data/.gitkeep
+models/
+mlruns/
+reports/
+*.duckdb
+*.duckdb.wal
+
+# Secrets
+.env
+
+# Private docs
+docs/development_guide.md
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Tools
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
