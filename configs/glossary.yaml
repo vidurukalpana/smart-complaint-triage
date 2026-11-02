@@ -1,0 +1,39 @@
+# US banking terms and the Sri Lankan terms shown to staff and used in LLM prompts.
+# Matching ignores case and only replaces whole words. Longer phrases are matched
+# first, so "ACH transfer" wins over "ACH".
+# Payment systems are close equivalents, not exact ones.
+
+terms:
+  # Credit information
+  - us: [credit bureau, credit reporting agency, consumer reporting agency]
+    sri_lanka: CRIB
+  - us: [Equifax, Experian, TransUnion]
+    sri_lanka: CRIB
+  - us: [credit report, credit file]
+    sri_lanka: CRIB report
+  - us: [credit score, FICO score]
+    sri_lanka: CRIB score
+
+  # Payments
+  - us: [ACH transfer, ACH payment, ACH]
+    sri_lanka: SLIPS
+  - us: [wire transfer]
+    sri_lanka: CEFTS
+  - us: [Zelle, Venmo, Cash App]
+    sri_lanka: LankaPay
+
+  # Accounts and loans
+  - us: [checking account]
+    sri_lanka: current account
+  - us: [mortgage loan, mortgage]
+    sri_lanka: housing loan
+  - us: [auto loan, car loan]
+    sri_lanka: vehicle loan
+  - us: [student loan]
+    sri_lanka: education loan
+
+  # Collections
+  - us: [debt collector, collection agency]
+    sri_lanka: recoveries officer
+  - us: [debt collection]
+    sri_lanka: recoveries

@@ -1,0 +1,93 @@
+# Sri Lankan bank teams and the CFPB products routed to each one.
+# Descriptions are shown to staff and used in LLM prompts (branch 10).
+# CFPB renamed some products in recent years; the older names are listed too so
+# every complaint in the data maps to a team.
+
+teams:
+  - id: deposits_savings
+    name: Deposits & Savings
+    description: >-
+      Savings, current and fixed deposit accounts: opening and closing accounts,
+      blocked or frozen accounts, deposits, withdrawals, account fees and statements.
+    cfpb_products:
+      - Checking or savings account
+
+  - id: cards
+    name: Cards
+    description: >-
+      Credit, debit and prepaid cards: card fees and interest, disputed card
+      transactions, card fraud, billing statements, card limits and rewards.
+    cfpb_products:
+      - Credit card
+      - Prepaid card
+      - Credit card or prepaid card
+
+  - id: housing_loans
+    name: Housing Loans
+    description: >-
+      Housing loans: applications, repayments, interest rates, property valuation,
+      loan restructuring and property auctions after default.
+    cfpb_products:
+      - Mortgage
+
+  - id: personal_loans
+    name: Personal Loans
+    description: >-
+      Personal, education and short-term loans: applications, repayments,
+      interest and charges, and loan settlement.
+    cfpb_products:
+      - Payday loan, title loan, personal loan, or advance loan
+      - Payday loan, title loan, or personal loan
+      - Student loan
+
+  - id: leasing_vehicle_loans
+    name: Leasing & Vehicle Loans
+    description: >-
+      Vehicle leasing and vehicle loans: lease and loan repayments, charges,
+      vehicle repossession and settlement.
+    cfpb_products:
+      - Vehicle loan or lease
+
+  - id: payments_digital
+    name: Payments & Digital Banking
+    description: >-
+      Fund transfers (CEFTS, SLIPS, LankaPay), mobile and internet banking,
+      digital wallets, QR payments, remittances and failed or delayed transfers.
+    cfpb_products:
+      - Money transfer, virtual currency, or money service
+
+  - id: recoveries
+    name: Recoveries
+    description: >-
+      Collection of overdue amounts: recovery calls and letters, disputed debts,
+      collection charges and treatment by recovery agents.
+    cfpb_products:
+      - Debt collection
+
+  - id: crib_disputes
+    name: Credit Information (CRIB) Disputes
+    description: >-
+      Incorrect information the bank reported to CRIB (Credit Information Bureau of
+      Sri Lanka): wrong balances, wrong arrears, accounts not belonging to the
+      customer, and requests to correct a CRIB report.
+    cfpb_products:
+      - Credit reporting or other personal consumer reports
+      - Credit reporting, credit repair services, or other personal consumer reports
+
+# Complaints the model is not confident about go here for a person to route.
+triage_queue:
+  id: human_triage
+  name: Human Triage Queue
+
+# CFPB products that are not bank services in Sri Lanka and are dropped from the data.
+excluded_cfpb_products:
+  - Debt or credit management  # debt settlement and credit repair companies
+  - Other financial service
+
+# Sri Lankan bank services with no matching CFPB product, so the model never learns them.
+# Such complaints get low confidence and go to the human triage queue.
+not_covered:
+  - name: Pawning
+    reason: >-
+      Gold-loan pawning is common in Sri Lanka but has no equivalent CFPB product,
+      so there are no training examples.
