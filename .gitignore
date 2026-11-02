@@ -12,6 +12,7 @@ reports/
 
 # Private docs
 docs/development_guide.md
+docs/decisions.md
 
 # Python
 __pycache__/
