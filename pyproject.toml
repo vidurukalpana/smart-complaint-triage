@@ -24,7 +24,6 @@ dependencies = [
 data = [
     "langdetect>=1.0.9",
     "pyspark>=3.5",
-    "requests>=2.32",
 ]
 ml = [
     "mlflow>=2.16",

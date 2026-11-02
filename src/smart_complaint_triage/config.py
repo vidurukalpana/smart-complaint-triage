@@ -282,6 +282,39 @@ class Glossary(_Model):
         return self._pattern.sub(lambda m: self._lookup[m.group(0).lower()], text)
 
 
+class SparkConfig(_Model):
+    master: str
+    driver_memory: str
+
+
+REQUIRED_COLUMNS = ("complaint_id", "date_received", "narrative")
+
+
+class IngestConfig(_Model):
+    base_url: str
+    files: tuple[str, ...] = Field(min_length=1)
+    raw_dir: Path
+    manifest_file: Path
+    delete_downloads: bool
+    parquet_dir: Path
+    report_file: Path
+    duckdb_table: str
+    spark: SparkConfig
+    date_format: str
+    columns: dict[str, str] = Field(min_length=1)
+    date_columns: tuple[str, ...] = ()
+
+    @model_validator(mode="after")
+    def _check_columns(self) -> IngestConfig:
+        names = list(self.columns.values())
+        if len(names) != len(set(names)):
+            raise ValueError(f"column names must be unique: {names}")
+        missing = [c for c in (*REQUIRED_COLUMNS, *self.date_columns) if c not in names]
+        if missing:
+            raise ValueError(f"columns missing from the column mapping: {missing}")
+        return self
+
+
 def config_dir() -> Path:
     """Directory holding the YAML files; override with the SCT_CONFIG_DIR env var."""
     return Path(os.environ.get(CONFIG_DIR_ENV, PROJECT_ROOT / "configs"))
@@ -318,6 +351,16 @@ def load_sla_config(path: Path | None = None) -> SlaConfig:
 @lru_cache
 def load_glossary(path: Path | None = None) -> Glossary:
     return Glossary.model_validate(_read_yaml(path or config_dir() / "glossary.yaml"))
+
+
+@lru_cache
+def load_ingest_config(path: Path | None = None) -> IngestConfig:
+    config = IngestConfig.model_validate(_read_yaml(path or config_dir() / "ingest.yaml"))
+    # Every forbidden field must be a real column, or the leakage check would miss it.
+    unknown = sorted(set(load_settings().forbidden_features) - set(config.columns.values()))
+    if unknown:
+        raise ValueError(f"forbidden_features not in the ingest column mapping: {unknown}")
+    return config
 
 
 def check_no_forbidden_features(columns: list[str], settings: Settings | None = None) -> None:
