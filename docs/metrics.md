@@ -26,7 +26,8 @@ Escalation uses complaints received up to 2026-07-29 only. Newer complaints may 
 
 These CFPB fields are only known after the company responds. Using them would leak the answer
 into the model, so they are listed in `forbidden_features` and checked with
-`check_no_forbidden_features()`:
+`check_no_forbidden_features()`. (`consumer_disputed`, listed in the development guide, is not in
+the CFPB narratives archive, so it cannot leak and is not listed.)
 
 | Field | Why it leaks |
 |---|---|
@@ -34,7 +35,6 @@ into the model, so they are listed in `forbidden_features` and checked with
 | `timely_response` | is the late-response label |
 | `company_public_response` | written by the company after handling the complaint |
 | `date_sent_to_company` | recorded during CFPB handling, after submission |
-| `consumer_disputed` | the customer's reaction to the company's response |
 
 ## 1. Team routing
 

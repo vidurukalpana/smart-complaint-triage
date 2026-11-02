@@ -72,7 +72,6 @@ def test_forbidden_features():
         "timely_response",
         "company_public_response",
         "date_sent_to_company",
-        "consumer_disputed",
     }
 
 
