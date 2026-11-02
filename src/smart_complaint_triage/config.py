@@ -315,6 +315,23 @@ class IngestConfig(_Model):
         return self
 
 
+class LanguageConfig(_Model):
+    keep: str
+    max_chars: int = Field(gt=0)
+    min_confidence: float = Field(gt=0, le=1)
+    min_letters: int = Field(gt=0)
+
+
+class CleaningConfig(_Model):
+    input_table: str
+    output_table: str
+    parquet_file: Path
+    report_file: Path
+    excluded_companies: tuple[str, ...]
+    min_text_letters: int = Field(ge=0)
+    language: LanguageConfig
+
+
 def config_dir() -> Path:
     """Directory holding the YAML files; override with the SCT_CONFIG_DIR env var."""
     return Path(os.environ.get(CONFIG_DIR_ENV, PROJECT_ROOT / "configs"))
@@ -361,6 +378,11 @@ def load_ingest_config(path: Path | None = None) -> IngestConfig:
     if unknown:
         raise ValueError(f"forbidden_features not in the ingest column mapping: {unknown}")
     return config
+
+
+@lru_cache
+def load_cleaning_config(path: Path | None = None) -> CleaningConfig:
+    return CleaningConfig.model_validate(_read_yaml(path or config_dir() / "cleaning.yaml"))
 
 
 def check_no_forbidden_features(columns: list[str], settings: Settings | None = None) -> None:
