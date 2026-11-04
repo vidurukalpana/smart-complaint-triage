@@ -1,8 +1,3 @@
-# Sri Lankan bank teams and the CFPB products routed to each one.
-# Descriptions are shown to staff and used in LLM prompts (branch 10).
-# CFPB renamed some products in recent years; the older names are listed too so
-# every complaint in the data maps to a team.
-
 teams:
   - id: deposits_savings
     name: Deposits & Savings
@@ -56,36 +51,28 @@ teams:
     cfpb_products:
       - Money transfer, virtual currency, or money service
 
-  - id: recoveries
-    name: Recoveries
+  - id: recoveries_crib
+    name: Recoveries & CRIB Disputes
     description: >-
       Collection of overdue amounts: recovery calls and letters, disputed debts,
-      collection charges and treatment by recovery agents.
+      collection charges and treatment by recovery agents. Also incorrect information
+      reported to CRIB (Credit Information Bureau of Sri Lanka): wrong balances, wrong
+      arrears, accounts not belonging to the customer, and requests to correct a CRIB report.
     cfpb_products:
       - Debt collection
-
-  - id: crib_disputes
-    name: Credit Information (CRIB) Disputes
-    description: >-
-      Incorrect information the bank reported to CRIB (Credit Information Bureau of
-      Sri Lanka): wrong balances, wrong arrears, accounts not belonging to the
-      customer, and requests to correct a CRIB report.
-    cfpb_products:
       - Credit reporting or other personal consumer reports
       - Credit reporting, credit repair services, or other personal consumer reports
 
-# Complaints the model is not confident about go here for a person to route.
+min_team_complaints: 500
+
 triage_queue:
   id: human_triage
   name: Human Triage Queue
 
-# CFPB products that are not bank services in Sri Lanka and are dropped from the data.
 excluded_cfpb_products:
-  - Debt or credit management  # debt settlement and credit repair companies
+  - Debt or credit management
   - Other financial service
 
-# Sri Lankan bank services with no matching CFPB product, so the model never learns them.
-# Such complaints get low confidence and go to the human triage queue.
 not_covered:
   - name: Pawning
     reason: >-

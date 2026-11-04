@@ -1,6 +1,3 @@
-# Project settings: paths, data window, splits and leakage rules.
-# All date ranges are inclusive and use the CFPB "date received" field.
-
 random_seed: 42
 
 paths:
@@ -17,22 +14,17 @@ data_window:
   end: 2026-08-14
 
 splits:
-  # Team routing: uses the full data window.
   routing:
-    train:      {start: 2026-05-15, end: 2026-07-12}
-    validation: {start: 2026-07-13, end: 2026-07-26}
-    test:       {start: 2026-07-27, end: 2026-08-14}
+    train:      {start: 2026-05-15, end: 2026-06-28}
+    validation: {start: 2026-06-29, end: 2026-07-12}
+    test:       {start: 2026-07-13, end: 2026-08-14}
 
-  # Escalation risk: complaints received after label_cutoff may not have a
-  # final company response yet, so their labels are not reliable.
   escalation:
-    label_cutoff: 2026-07-29
-    train:      {start: 2026-05-15, end: 2026-07-05}
-    validation: {start: 2026-07-06, end: 2026-07-15}
-    test:       {start: 2026-07-16, end: 2026-07-29}
+    label_cutoff: 2026-07-12
+    train:      {start: 2026-05-15, end: 2026-06-21}
+    validation: {start: 2026-06-22, end: 2026-06-28}
+    test:       {start: 2026-06-29, end: 2026-07-12}
 
-# CFPB fields that are only known after the company responds.
-# They must never be used as model inputs (target leakage).
 forbidden_features:
   - company_response
   - timely_response

@@ -16,11 +16,15 @@ Numbers referenced here live in `configs/metrics.yaml` and `configs/settings.yam
 
 | Task | Train | Validation | Test |
 |---|---|---|---|
-| Routing | 2026-05-15 → 07-12 | 07-13 → 07-26 | 07-27 → 08-14 |
-| Escalation | 2026-05-15 → 07-05 | 07-06 → 07-15 | 07-16 → 07-29 |
+| Routing | 2026-05-15 → 06-28 | 06-29 → 07-12 | 07-13 → 08-14 |
+| Escalation | 2026-05-15 → 06-21 | 06-22 → 06-28 | 06-29 → 07-12 |
 
-Escalation uses complaints received up to 2026-07-29 only. Newer complaints may still be
-"In progress", so their outcome (monetary relief, late response) is not known yet.
+Escalation uses complaints received up to 2026-07-12 only. After that date the late-response
+rate drops sharply, because the complaints with published narratives are mostly fast responses,
+so the labels are biased. See `docs/eda_summary.md`.
+
+Models train and evaluate on `NOT is_duplicate_narrative`, so copies of a template letter cannot
+appear in both train and test.
 
 ### Fields never used as model inputs
 

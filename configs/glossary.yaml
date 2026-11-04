@@ -1,8 +1,3 @@
-# US banking terms and the Sri Lankan terms shown to staff and used in LLM prompts.
-# Matching ignores case and only replaces whole words. Longer phrases are matched
-# first, so "ACH transfer" wins over "ACH".
-# Payment systems are close equivalents, not exact ones.
-
 terms:
   # Credit information
   - us: [credit bureau, credit reporting agency, consumer reporting agency]

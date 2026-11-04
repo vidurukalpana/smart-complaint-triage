@@ -1,16 +1,11 @@
-# Evaluation settings. See docs/metrics.md for what each metric means.
-
 routing:
   primary_metric: macro_f1
-  # Auto-routed complaints must be correct at least this often;
-  # the confidence threshold is chosen on the validation split to meet it.
   auto_route_min_precision: 0.95
   llm_sample_size: 2000
 
 escalation:
   primary_metric: pr_auc
   calibration_bins: 10
-  # Precision and recall are reported for the top K complaints in each team queue.
   top_k: [10, 50]
 
 emerging_issues:

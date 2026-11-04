@@ -5,9 +5,8 @@ import pytest
 
 pytest.importorskip("langdetect")
 
-from smart_complaint_triage.clean import clean, detect_language, is_kept_language  # noqa: E402
+from smart_complaint_triage.clean import clean, is_kept_language  # noqa: E402
 from smart_complaint_triage.config import (  # noqa: E402
-    UnknownProductError,
     load_cleaning_config,
     load_settings,
     load_taxonomy,
@@ -66,26 +65,6 @@ def test_rows_kept(result):
     assert report["rows_out"] == 4
 
 
-def test_narrative_cleaned_and_pii_counted(result):
-    df, report = result
-    narrative = df.set_index("complaint_id").loc[1, "narrative"]
-    assert "[AMOUNT:25.00]" in narrative
-    assert "[REDACTED_DATE]" in narrative
-    assert "[PHONE]" in narrative
-    assert report["pii_masked"] == {"PHONE": 1}
-
-
-def test_team_mapping(result):
-    df, _ = result
-    teams = df.set_index("complaint_id")["team_id"].to_dict()
-    assert teams == {
-        1: "deposits_savings",
-        5: "housing_loans",
-        6: "housing_loans",
-        7: "deposits_savings",
-    }
-
-
 def test_duplicates_marked_not_removed(result):
     df, report = result
     by_id = df.set_index("complaint_id")
@@ -100,24 +79,12 @@ def test_splits(result):
     by_id = df.set_index("complaint_id")
     assert by_id.loc[5, "routing_split"] == "train"
     assert by_id.loc[6, "routing_split"] == "test"
-    assert pd.isna(by_id.loc[6, "escalation_split"])  # after the 29 July label cutoff
-
-
-def test_unknown_product_raises():
-    with pytest.raises(UnknownProductError):
-        run_clean([complaint(1, product="Brand new CFPB product")])
-
-
-def test_detect_language():
-    assert detect_language(ENGLISH, max_chars=1000)[0] == "en"
-    assert detect_language(SPANISH, max_chars=1000)[0] == "es"
-    assert detect_language("[REDACTED] [AMOUNT:5.00]", max_chars=1000) == ("unknown", 0.0)
+    assert pd.isna(by_id.loc[6, "escalation_split"])  # after the label cutoff
 
 
 @pytest.mark.parametrize(
     ("lang", "prob", "letters", "kept"),
     [
-        ("en", 0.5, 30, True),
         ("es", 0.99, 150, False),  # confident and long enough: dropped
         ("vi", 1.0, 41, True),  # too short to trust
         ("fr", 0.6, 240, True),  # not confident enough

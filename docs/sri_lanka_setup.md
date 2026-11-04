@@ -23,14 +23,16 @@ Each CFPB product is mapped to one team. The routing models learn to predict the
 | Personal Loans | Payday, title, personal or advance loans; Student loan |
 | Leasing & Vehicle Loans | Vehicle loan or lease |
 | Payments & Digital Banking | Money transfer, virtual currency, or money service |
-| Recoveries | Debt collection |
-| Credit Information (CRIB) Disputes | Credit reporting (complaints about what the bank reported) |
+| Recoveries & CRIB Disputes | Debt collection; Credit reporting (complaints about what the bank reported) |
 
 - Older CFPB names for the same products are mapped too, because CFPB renamed several of them.
 - **Excluded products:** "Debt or credit management" and "Other financial service" are not
   bank services, so these complaints are dropped.
 - **Unknown products** raise an error instead of being dropped silently, so a new CFPB product
   name is noticed and added to the file.
+- CRIB disputes are merged with Recoveries because there are only 98 such complaints in the data
+  (see `docs/eda_summary.md`). A bank with enough of its own CRIB complaints can split them into
+  a separate team in `configs/taxonomy.yaml`.
 - Complaints the model is not confident about go to the **Human Triage Queue**.
 - Each team has a description. Staff see it, and the LLM router (branch 10) uses it to choose a team.
 

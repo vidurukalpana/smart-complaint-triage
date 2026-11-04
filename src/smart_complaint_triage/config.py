@@ -167,6 +167,7 @@ class UnknownProductError(KeyError):
 
 class Taxonomy(_Model):
     teams: tuple[Team, ...] = Field(min_length=1)
+    min_team_complaints: int = Field(gt=0)
     triage_queue: Queue
     excluded_cfpb_products: tuple[str, ...] = ()
     not_covered: tuple[NotCoveredService, ...] = ()

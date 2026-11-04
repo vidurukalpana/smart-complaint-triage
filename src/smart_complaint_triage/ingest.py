@@ -1,15 +1,6 @@
 """Download the CFPB narratives archive, keep the data window, and load it into DuckDB.
 
 Run with ``python -m smart_complaint_triage.ingest`` (or ``make ingest``).
-
-Steps:
-1. Download the monthly archive ZIPs listed in ``configs/ingest.yaml`` and record a manifest.
-2. Unzip them to CSV.
-3. Read the CSVs with PySpark; narratives contain line breaks and quotes.
-4. Keep complaints received in the data window that have a narrative.
-5. Remove duplicate complaint IDs.
-6. Save as Parquet and load into DuckDB as ``complaints_raw``.
-7. Delete the downloaded files, so only the data window is kept.
 """
 
 from __future__ import annotations
@@ -39,9 +30,6 @@ if TYPE_CHECKING:
     from pyspark.sql import DataFrame, SparkSession
 
 CHUNK_SIZE = 1024 * 1024
-
-
-# ---------------------------------------------------------------- download
 
 
 def download(url: str, zip_path: Path) -> dict:
@@ -80,9 +68,6 @@ def extract_csv(zip_path: Path, csv_path: Path) -> None:
             shutil.copyfileobj(src, dst, CHUNK_SIZE)
 
 
-# ---------------------------------------------------------------- spark
-
-
 def spark_session(config: IngestConfig) -> SparkSession:
     from pyspark.sql import SparkSession
 
@@ -98,7 +83,7 @@ def spark_session(config: IngestConfig) -> SparkSession:
 
 
 def read_complaints(spark: SparkSession, csv_paths: list[Path], config: IngestConfig) -> DataFrame:
-    """Read the CFPB CSVs, keep the mapped columns under our names, and parse types."""
+    """Read the CFPB CSVs, keep and rename the mapped columns, and parse types."""
     from pyspark.sql import functions as F
 
     raw = (
@@ -159,9 +144,6 @@ def filter_and_dedupe(df: DataFrame, window: DateRange) -> tuple[DataFrame, Inge
     return kept, stats
 
 
-# ---------------------------------------------------------------- output
-
-
 def write_parquet(df: DataFrame, parquet_dir: Path) -> None:
     df.orderBy("date_received", "complaint_id").coalesce(1).write.mode("overwrite").parquet(
         str(parquet_dir)
@@ -177,9 +159,6 @@ def load_duckdb(parquet_dir: Path, duckdb_file: Path, table: str) -> int:
             [str(parquet_dir / "*.parquet")],
         )
         return con.execute(f'SELECT count(*) FROM "{table}"').fetchone()[0]
-
-
-# ---------------------------------------------------------------- pipeline
 
 
 def run(force_download: bool = False, root: Path = PROJECT_ROOT) -> IngestStats:
