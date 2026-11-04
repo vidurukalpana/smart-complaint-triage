@@ -56,23 +56,22 @@ teams:
     cfpb_products:
       - Money transfer, virtual currency, or money service
 
-  - id: recoveries
-    name: Recoveries
+  # CRIB disputes are merged in here: with 98 complaints they are too small to train and
+  # test as a team, and their text is closest to this team. See docs/eda_summary.md.
+  - id: recoveries_crib
+    name: Recoveries & CRIB Disputes
     description: >-
       Collection of overdue amounts: recovery calls and letters, disputed debts,
-      collection charges and treatment by recovery agents.
+      collection charges and treatment by recovery agents. Also incorrect information
+      reported to CRIB (Credit Information Bureau of Sri Lanka): wrong balances, wrong
+      arrears, accounts not belonging to the customer, and requests to correct a CRIB report.
     cfpb_products:
       - Debt collection
-
-  - id: crib_disputes
-    name: Credit Information (CRIB) Disputes
-    description: >-
-      Incorrect information the bank reported to CRIB (Credit Information Bureau of
-      Sri Lanka): wrong balances, wrong arrears, accounts not belonging to the
-      customer, and requests to correct a CRIB report.
-    cfpb_products:
       - Credit reporting or other personal consumer reports
       - Credit reporting, credit repair services, or other personal consumer reports
+
+# Teams with fewer complaints than this are merged into their closest team.
+min_team_complaints: 500
 
 # Complaints the model is not confident about go here for a person to route.
 triage_queue:

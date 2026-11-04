@@ -18,7 +18,7 @@ def raw_taxonomy() -> dict:
         return yaml.safe_load(f)
 
 
-def test_eight_sri_lankan_teams():
+def test_seven_sri_lankan_teams():
     assert [team.name for team in load_taxonomy().teams] == [
         "Deposits & Savings",
         "Cards",
@@ -26,8 +26,7 @@ def test_eight_sri_lankan_teams():
         "Personal Loans",
         "Leasing & Vehicle Loans",
         "Payments & Digital Banking",
-        "Recoveries",
-        "Credit Information (CRIB) Disputes",
+        "Recoveries & CRIB Disputes",
     ]
 
 
@@ -42,8 +41,8 @@ def test_eight_sri_lankan_teams():
         ("Student loan", "personal_loans"),
         ("Vehicle loan or lease", "leasing_vehicle_loans"),
         ("Money transfer, virtual currency, or money service", "payments_digital"),
-        ("Debt collection", "recoveries"),
-        ("Credit reporting or other personal consumer reports", "crib_disputes"),
+        ("Debt collection", "recoveries_crib"),
+        ("Credit reporting or other personal consumer reports", "recoveries_crib"),
     ],
 )
 def test_product_maps_to_team(product, team_id):

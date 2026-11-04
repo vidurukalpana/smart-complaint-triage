@@ -27,34 +27,33 @@ def test_data_window():
 
 def test_routing_splits():
     routing = load_settings().splits.routing
-    assert (routing.train.start, routing.train.end) == (date(2026, 5, 15), date(2026, 7, 12))
+    assert (routing.train.start, routing.train.end) == (date(2026, 5, 15), date(2026, 6, 28))
     assert (routing.validation.start, routing.validation.end) == (
-        date(2026, 7, 13),
-        date(2026, 7, 26),
+        date(2026, 6, 29),
+        date(2026, 7, 12),
     )
-    assert (routing.test.start, routing.test.end) == (date(2026, 7, 27), date(2026, 8, 14))
+    assert (routing.test.start, routing.test.end) == (date(2026, 7, 13), date(2026, 8, 14))
 
 
 def test_escalation_splits():
     escalation = load_settings().splits.escalation
-    assert escalation.label_cutoff == date(2026, 7, 29)
-    assert (escalation.train.start, escalation.train.end) == (date(2026, 5, 15), date(2026, 7, 5))
+    assert escalation.label_cutoff == date(2026, 7, 12)
+    assert (escalation.train.start, escalation.train.end) == (date(2026, 5, 15), date(2026, 6, 21))
     assert (escalation.validation.start, escalation.validation.end) == (
-        date(2026, 7, 6),
-        date(2026, 7, 15),
+        date(2026, 6, 22),
+        date(2026, 6, 28),
     )
-    assert (escalation.test.start, escalation.test.end) == (date(2026, 7, 16), date(2026, 7, 29))
+    assert (escalation.test.start, escalation.test.end) == (date(2026, 6, 29), date(2026, 7, 12))
 
 
 @pytest.mark.parametrize(
     ("day", "routing", "escalation"),
     [
         (date(2026, 5, 15), "train", "train"),
-        (date(2026, 7, 10), "train", "validation"),
-        (date(2026, 7, 13), "validation", "validation"),
-        (date(2026, 7, 20), "validation", "test"),
-        (date(2026, 7, 29), "test", "test"),
-        (date(2026, 7, 30), "test", None),
+        (date(2026, 6, 22), "train", "validation"),
+        (date(2026, 6, 29), "validation", "test"),
+        (date(2026, 7, 12), "validation", "test"),
+        (date(2026, 7, 13), "test", None),
         (date(2026, 8, 14), "test", None),
         (date(2026, 8, 15), None, None),
         (date(2026, 5, 14), None, None),
@@ -82,7 +81,7 @@ def test_check_no_forbidden_features():
 
 
 def test_overlapping_splits_rejected(raw_settings):
-    raw_settings["splits"]["routing"]["validation"]["start"] = date(2026, 7, 12)
+    raw_settings["splits"]["routing"]["validation"]["start"] = date(2026, 6, 28)
     with pytest.raises(ValidationError, match="validation must start the day after train"):
         Settings.model_validate(raw_settings)
 
@@ -94,7 +93,7 @@ def test_gap_between_splits_rejected(raw_settings):
 
 
 def test_escalation_test_after_cutoff_rejected(raw_settings):
-    raw_settings["splits"]["escalation"]["test"]["end"] = date(2026, 7, 30)
+    raw_settings["splits"]["escalation"]["test"]["end"] = date(2026, 7, 13)
     with pytest.raises(ValidationError, match="after label_cutoff"):
         Settings.model_validate(raw_settings)
 

@@ -17,19 +17,21 @@ data_window:
   end: 2026-08-14
 
 splits:
-  # Team routing: uses the full data window.
+  # Team routing: uses the full data window. Dates give about 70/20/10 of the complaints;
+  # narratives thin out after mid-July, so equal-length periods would leave too few to test.
   routing:
-    train:      {start: 2026-05-15, end: 2026-07-12}
-    validation: {start: 2026-07-13, end: 2026-07-26}
-    test:       {start: 2026-07-27, end: 2026-08-14}
+    train:      {start: 2026-05-15, end: 2026-06-28}
+    validation: {start: 2026-06-29, end: 2026-07-12}
+    test:       {start: 2026-07-13, end: 2026-08-14}
 
-  # Escalation risk: complaints received after label_cutoff may not have a
-  # final company response yet, so their labels are not reliable.
+  # Escalation risk: narratives were published after the company responded, so complaints
+  # received after label_cutoff are mostly fast responses: the late-response rate falls from
+  # 4-5% to under 3%. Their labels are biased, so they are not used. See docs/eda_summary.md.
   escalation:
-    label_cutoff: 2026-07-29
-    train:      {start: 2026-05-15, end: 2026-07-05}
-    validation: {start: 2026-07-06, end: 2026-07-15}
-    test:       {start: 2026-07-16, end: 2026-07-29}
+    label_cutoff: 2026-07-12
+    train:      {start: 2026-05-15, end: 2026-06-21}
+    validation: {start: 2026-06-22, end: 2026-06-28}
+    test:       {start: 2026-06-29, end: 2026-07-12}
 
 # CFPB fields that are only known after the company responds.
 # They must never be used as model inputs (target leakage).

@@ -2,7 +2,7 @@ PYTHON ?= python3.11
 VENV := .venv
 BIN := $(VENV)/bin
 
-.PHONY: setup lint test ingest clean-data
+.PHONY: setup lint test ingest clean-data eda
 
 setup:
 	$(PYTHON) -m venv $(VENV)
@@ -24,3 +24,7 @@ ingest:
 # Clean complaints_raw into complaints_clean (English only, PII masked, teams, splits)
 clean-data:
 	$(BIN)/python -m smart_complaint_triage.clean
+
+# Run the EDA queries and save the results to reports/eda/
+eda:
+	$(BIN)/python -m smart_complaint_triage.eda
