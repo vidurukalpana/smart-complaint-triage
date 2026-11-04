@@ -1,7 +1,7 @@
 """Exploratory data analysis of the complaints, as SQL queries on DuckDB.
 
 Run with ``python -m smart_complaint_triage.eda`` (or ``make eda``). Each query's result is
-saved as a CSV in ``reports/eda/``. The findings are written up in ``docs/eda_summary.md``.
+saved as a CSV in ``reports/eda/``.
 """
 
 from __future__ import annotations

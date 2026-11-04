@@ -1,23 +1,18 @@
 # Complaint deadlines from the Central Bank of Sri Lanka's
 # Financial Consumer Protection Regulations No. 1 of 2023
 # (Gazette Extraordinary No. 2344/17, 9 August 2023).
-# Both deadlines are counted from the date the complaint was received.
 # Service Level Agreement - SLA - a short term for complaint deadlines
 
 deadlines:
-  # Regulation 43.3: acknowledge in writing "within a reasonable time
-  # [preferably within five (05) working days]". A recommended target, not a legal limit,
-  # so passing it gives "past recommended time" instead of "overdue".
+  # "within a reasonable time [preferably within five (05) working days]"
   acknowledgement:
     days: 5
-    day_type: working      # skip weekends and holidays
-    due_soon_days: 2       # "due soon" when this many calendar days or fewer are left
+    day_type: working
+    due_soon_days: 2
     binding: false
     regulation: "43.3"
 
-  # Regulation 46.1: resolve "within 21 calendar days". A legal limit.
-  # The regulation allows an extension of up to 3 months if the customer is told before
-  # day 21. It is not modelled: no data shows whether or how often banks use it.
+  # "resolve such complaint within 21 calendar days"
   resolution:
     days: 21
     day_type: calendar
@@ -28,9 +23,5 @@ deadlines:
 calendar:
   country: LK
   weekend_days: [Saturday, Sunday]
-  # Holidays come from the `holidays` package (public, bank and Poya holidays).
-  # The CSV below is added on top: it covers years the package does not have yet
-  # (it ends at 2026) and special holidays declared at short notice.
-  # A date in a year with no holiday data raises an error instead of guessing.
   holiday_categories: [public, bank]
   fallback_csv: configs/holidays_lk.csv

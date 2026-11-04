@@ -1,8 +1,3 @@
-# Sri Lankan bank teams and the CFPB products routed to each one.
-# Descriptions are shown to staff and used in LLM prompts (branch 10).
-# CFPB renamed some products in recent years; the older names are listed too so
-# every complaint in the data maps to a team.
-
 teams:
   - id: deposits_savings
     name: Deposits & Savings
@@ -56,8 +51,6 @@ teams:
     cfpb_products:
       - Money transfer, virtual currency, or money service
 
-  # CRIB disputes are merged in here: with 98 complaints they are too small to train and
-  # test as a team, and their text is closest to this team. See docs/eda_summary.md.
   - id: recoveries_crib
     name: Recoveries & CRIB Disputes
     description: >-
@@ -70,21 +63,16 @@ teams:
       - Credit reporting or other personal consumer reports
       - Credit reporting, credit repair services, or other personal consumer reports
 
-# Teams with fewer complaints than this are merged into their closest team.
 min_team_complaints: 500
 
-# Complaints the model is not confident about go here for a person to route.
 triage_queue:
   id: human_triage
   name: Human Triage Queue
 
-# CFPB products that are not bank services in Sri Lanka and are dropped from the data.
 excluded_cfpb_products:
-  - Debt or credit management  # debt settlement and credit repair companies
+  - Debt or credit management
   - Other financial service
 
-# Sri Lankan bank services with no matching CFPB product, so the model never learns them.
-# Such complaints get low confidence and go to the human triage queue.
 not_covered:
   - name: Pawning
     reason: >-

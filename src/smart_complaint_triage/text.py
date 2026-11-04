@@ -30,10 +30,7 @@ EMAIL = re.compile(r"\b[\w.+-]+@[\w-]+(?:\.[\w-]+)+\b")
 # US phone numbers: 555-123-4567, (555) 123-4567, 555.123.4567, +1 555 123 4567.
 PHONE = re.compile(r"(?<!\d)(?:\+?1[\s.-]?)?(?:\(\d{3}\)\s?|\d{3}[\s.-])\d{3}[\s.-]\d{4}(?!\d)")
 
-# Account-, card- or reference-like numbers: 9+ digits in a row, or 12+ digits in groups
-# split by spaces or dashes (cards, tracking numbers). Shorter numbers are left alone:
-# in this data they are law sections ("15 U.S.C. 6801-6809"), dates and amounts, and
-# CFPB has already redacted real account numbers as XXXX.
+# Account-like numbers: 9+ digits in a row, or 12+ digits in groups split by spaces or dashes.
 NUMBER_RUN = re.compile(r"(?<![\d.])\d(?:[ -]?\d)+(?![\d.])")
 MIN_DIGITS_IN_A_ROW = 9
 MIN_DIGITS_IN_GROUPS = 12
@@ -106,7 +103,7 @@ def clean_narrative(text: str, counts: Counter[str] | None = None) -> str:
 
 
 def strip_tokens(text: str) -> str:
-    """Text without our tokens, e.g. for language detection."""
+    """Text without tokens, e.g. for language detection."""
     return normalize_whitespace(TOKEN.sub(" ", text))
 
 

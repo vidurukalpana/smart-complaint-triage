@@ -1,28 +1,17 @@
-# Cleaning of complaints_raw into complaints_clean.
-
 input_table: complaints_raw
 output_table: complaints_clean
 parquet_file: data/processed/complaints_clean.parquet
-report_file: data/processed/clean_report.json   # row counts and mask counts at each step
+report_file: data/processed/clean_report.json
 
-# Complaints about the three US credit bureaus are removed, so the data reflects
-# complaints about banks and lenders. Names exactly as they appear in the CFPB data.
 excluded_companies:
   - EQUIFAX, INC.
   - Experian Information Solutions Inc.
   - TRANSUNION INTERMEDIATE HOLDINGS, INC.
 
-# Complaints with fewer letters than this, once CFPB's redactions are removed, have no
-# usable text (e.g. a narrative that is only "XXXX XXXX ...") and are dropped.
 min_text_letters: 20
 
 language:
   keep: en
-  # Detection reads only the start of the narrative; this is enough to tell the
-  # language and keeps detection fast.
   max_chars: 1000
-  # A complaint is dropped as non-English only when the detector is this confident
-  # AND the text has at least min_letters letters. Short or unusual English text
-  # (capitals, lists) is often misdetected, so it is kept.
   min_confidence: 0.9
   min_letters: 100

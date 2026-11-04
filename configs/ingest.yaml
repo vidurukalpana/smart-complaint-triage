@@ -1,13 +1,3 @@
-# Download and ingest of the CFPB complaint data.
-#
-# CFPB stopped publishing complaint narratives on 14 August 2026 and removed them from its
-# bulk download. Narratives up to that date are in the CFPB FOIA Reading Room
-# ("CFPB Consumer Complaint Database Narratives Archive"), split into export files.
-# The four files below cover May-August 2026 (69 MB zipped, 0.83 GB unzipped). They are
-# filtered to data_window in settings.yaml and then deleted; the manifest keeps their
-# URLs, sizes and checksums.
-# https://www.consumerfinance.gov/foia-requests/foia-electronic-reading-room/cfpb-consumer-complaint-database-narratives-archive/
-
 base_url: https://files.consumerfinance.gov/f/documents/
 files:
   - CCDB_Export_18_May_2026.zip
@@ -16,22 +6,20 @@ files:
   - CCDB_Export_21_August_2026.zip
 
 raw_dir: data/raw/narratives_archive
-manifest_file: data/raw/narratives_archive/download_manifest.json  # URL, date, size, checksum
-delete_downloads: true   # delete the ZIPs and CSVs after ingest; only the data window is kept
+manifest_file: data/raw/narratives_archive/download_manifest.json
+delete_downloads: true
 
 parquet_dir: data/processed/complaints_raw.parquet
-report_file: data/processed/ingest_report.json   # row counts at each step
+report_file: data/processed/ingest_report.json
 duckdb_table: complaints_raw
 
 spark:
   master: local[*]
   driver_memory: 4g
 
-# Date format used in the CFPB CSV.
 date_format: yyyy-MM-dd
 
-# CFPB CSV header -> our column name. Only these columns are kept.
-# The archive has no "Consumer consent provided?" or "Consumer disputed?" columns.
+# CFPB CSV header: column name
 columns:
   Complaint ID: complaint_id
   Date received: date_received
@@ -50,5 +38,4 @@ columns:
   Timely response?: timely_response
   Company public response: company_public_response
 
-# Columns converted from text to dates.
 date_columns: [date_received, date_sent_to_company]

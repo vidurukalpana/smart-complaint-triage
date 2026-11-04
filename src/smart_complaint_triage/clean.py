@@ -1,15 +1,6 @@
 """Build ``complaints_clean`` from ``complaints_raw``.
 
 Run with ``python -m smart_complaint_triage.clean`` (or ``make clean-data``).
-
-Steps:
-1. Remove complaints about the three US credit bureaus.
-2. Map each CFPB product to its Sri Lankan bank team; drop excluded products.
-3. Clean the narrative: whitespace, amounts, CFPB redactions, remaining PII.
-4. Drop narratives with no usable text, then keep English complaints only.
-5. Mark duplicate narratives.
-6. Assign routing and escalation splits.
-7. Save as ``complaints_clean`` in DuckDB and as Parquet.
 """
 
 from __future__ import annotations

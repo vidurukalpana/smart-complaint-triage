@@ -100,7 +100,7 @@ def test_splits(result):
     by_id = df.set_index("complaint_id")
     assert by_id.loc[5, "routing_split"] == "train"
     assert by_id.loc[6, "routing_split"] == "test"
-    assert pd.isna(by_id.loc[6, "escalation_split"])  # after the 29 July label cutoff
+    assert pd.isna(by_id.loc[6, "escalation_split"])  # after the label cutoff
 
 
 def test_unknown_product_raises():

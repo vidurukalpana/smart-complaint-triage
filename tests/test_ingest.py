@@ -25,7 +25,7 @@ WINDOW = DateRange(start=date(2026, 5, 15), end=date(2026, 8, 14))
 
 
 def row(config: IngestConfig, **values) -> dict:
-    """A CSV row with every CFPB header; ``values`` are given by our column names."""
+    """A CSV row with every CFPB header; ``values`` are given by mapped column name."""
     by_name = {name: "" for name in config.columns.values()}
     by_name.update(values)
     return {header: by_name[name] for header, name in config.columns.items()}
