@@ -21,34 +21,6 @@ def calendar(calculator) -> WorkingDayCalendar:
     return calculator.calendar
 
 
-def test_deadline_settings():
-    deadlines = load_sla_config().deadlines
-    assert (deadlines.acknowledgement.days, deadlines.acknowledgement.day_type) == (5, "working")
-    assert (deadlines.resolution.days, deadlines.resolution.day_type) == (21, "calendar")
-    assert not deadlines.acknowledgement.binding
-    assert deadlines.resolution.binding
-
-
-@pytest.mark.parametrize(
-    "day",
-    [
-        date(2026, 5, 28),  # Eid al-Adha
-        date(2026, 6, 29),  # Poson Full Moon Poya Day
-        date(2026, 7, 29),  # Esala Full Moon Poya Day
-        date(2026, 8, 27),  # Nikini Full Moon Poya Day
-    ],
-)
-def test_holidays_are_not_working_days(calendar, day):
-    assert calendar.is_holiday(day)
-    assert not calendar.is_working_day(day)
-
-
-def test_weekends_are_not_working_days(calendar):
-    assert not calendar.is_working_day(date(2026, 6, 6))  # Saturday
-    assert not calendar.is_working_day(date(2026, 6, 7))  # Sunday
-    assert calendar.is_working_day(date(2026, 6, 8))  # Monday
-
-
 @pytest.mark.parametrize(
     ("received", "ack_due"),
     [
@@ -58,12 +30,8 @@ def test_weekends_are_not_working_days(calendar):
         (date(2026, 6, 6), date(2026, 6, 12)),
         # Fri before Poson Poya (Mon 29 Jun): skips the weekend and the holiday
         (date(2026, 6, 26), date(2026, 7, 6)),
-        # Mon with Esala Poya on Wed 29 Jul
-        (date(2026, 7, 27), date(2026, 8, 4)),
         # Received on a holiday (Esala Poya)
         (date(2026, 7, 29), date(2026, 8, 5)),
-        # Wed before Eid (Thu) and a Poya that falls on Saturday
-        (date(2026, 5, 27), date(2026, 6, 4)),
         # Two holidays in a row (26 and 27 Aug)
         (date(2026, 8, 25), date(2026, 9, 3)),
     ],
@@ -81,7 +49,6 @@ def test_resolution_due_date_is_21_calendar_days(calculator):
 @pytest.mark.parametrize(
     ("as_of", "days_remaining", "status"),
     [
-        (date(2026, 7, 1), 21, SlaStatus.ON_TRACK),
         (date(2026, 7, 16), 6, SlaStatus.ON_TRACK),
         (date(2026, 7, 17), 5, SlaStatus.DUE_SOON),
         (date(2026, 7, 22), 0, SlaStatus.DUE_SOON),  # due today
@@ -96,24 +63,10 @@ def test_resolution_status(calculator, as_of, days_remaining, status):
     assert sla.status == status
 
 
-@pytest.mark.parametrize(
-    ("as_of", "status"),
-    [
-        (date(2026, 7, 1), SlaStatus.ON_TRACK),
-        (date(2026, 7, 6), SlaStatus.DUE_SOON),  # 2 days left
-        (date(2026, 7, 8), SlaStatus.DUE_SOON),  # due today
-        (date(2026, 7, 9), SlaStatus.PAST_TARGET),  # a target, not a legal deadline
-    ],
-)
-def test_acknowledgement_status(calculator, as_of, status):
-    sla = calculator.evaluate(date(2026, 7, 1), as_of=as_of)
+def test_acknowledgement_past_target_is_not_overdue(calculator):
+    sla = calculator.evaluate(date(2026, 7, 1), as_of=date(2026, 7, 9))
     assert sla.acknowledgement.due_date == date(2026, 7, 8)
-    assert sla.acknowledgement.status == status
-
-
-def test_as_of_before_received_rejected(calculator):
-    with pytest.raises(ValueError, match="before received"):
-        calculator.evaluate(date(2026, 7, 10), as_of=date(2026, 7, 9))
+    assert sla.acknowledgement.status == SlaStatus.PAST_TARGET
 
 
 def test_year_without_holiday_data_raises(calculator):

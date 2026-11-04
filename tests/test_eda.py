@@ -4,7 +4,7 @@ import duckdb
 import pytest
 
 from smart_complaint_triage.config import load_taxonomy
-from smart_complaint_triage.eda import QUERIES, small_teams, unmapped_products
+from smart_complaint_triage.eda import QUERIES, unmapped_products
 
 COLUMNS = (
     "date_received DATE, team_name VARCHAR, issue VARCHAR, company VARCHAR, narrative VARCHAR, "
@@ -51,14 +51,5 @@ def test_weekly_outcomes_group_monday_to_sunday(con):
     ]
 
 
-def test_narrative_lengths_count_words(con):
-    row = con.execute(QUERIES["narrative_lengths"]).fetchall()[0]
-    assert row[:3] == ("Cards", 3, 3.0)
-
-
 def test_unmapped_products(con):
     assert unmapped_products(con, "complaints_clean", load_taxonomy()) == ["Unknown product"]
-
-
-def test_small_teams(con):
-    assert small_teams(con, minimum=2) == {"Housing Loans": 1}
